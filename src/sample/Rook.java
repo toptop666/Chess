@@ -9,16 +9,13 @@ public class Rook extends Piece {
     }
 
     public ArrayList<Position> getAvailableMoves() {
-        ArrayList<Position> positions = new ArrayList<Position>();
-        for(int i = 0; i<this.getMaxCell(); i++) {
-            if(i==this.getPosition().getHeight()) {
-                continue;
-            }
-            Position position1 = new Position(i, this.getPosition().getWidth());
-            Position position2 = new Position(this.getPosition().getHeight(), i);
-            positions.add(position1);
-            positions.add(position2);
+        ArrayList<Position> moves = new ArrayList<Position>();
+        for(int i = 0; i<8; i++) {
+            moves.add(new Position(i, this.getPosition().getWidth()));
+            moves.add(new Position(this.getPosition().getHeight(), i));
         }
-        return positions;
+        moves.removeIf(position -> position.equals(new Position(-1, -1)));
+
+        return moves;
     }
 }

@@ -4,17 +4,15 @@ import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
-import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.Background;
 import javafx.scene.layout.BackgroundFill;
 import javafx.scene.layout.GridPane;
 import javafx.scene.paint.Color;
+import javafx.scene.text.Font;
 
-import java.io.File;
 import java.io.IOException;
-import java.net.MalformedURLException;
-import java.util.Hashtable;
+import java.util.ArrayList;
 
 import static sample.Main.NUMBER_OF_CELLS;
 
@@ -27,18 +25,20 @@ public class Controller {
     @FXML
     private ImageView image;
 
-    private Button[][] board;
+    private Button[][] buttons;
     private final int CELLS_IN_ROW = NUMBER_OF_CELLS;
-    public enum piecesNames {KING, ROOK, BISHOP, QUEEN, KNIGHT, PAWN};
     private LoadPiecesModels piecesModels;
+    private Game game;
+    private boolean tapOnPiece = false;
+    private Position selectedPosition;
 
 
     public void initialize() throws IOException {
 
-        Board board = new Board();
+        this.game = new Game();
         drawBoard();
         this.piecesModels = new LoadPiecesModels("resources\\piecesModels");
-        drawBoardState(board);
+        drawBoardState();
 
     }
 
@@ -46,15 +46,19 @@ public class Controller {
     private void drawBoard() {
         boolean blackOrWhite = true;
         // true = white, false = black
-        this.board = new Button[this.CELLS_IN_ROW][this.CELLS_IN_ROW];
+        this.buttons = new Button[this.CELLS_IN_ROW][this.CELLS_IN_ROW];
+        Font font = new Font("Arial", 24);
         for(int i = 0; i<this.CELLS_IN_ROW; i++) {
             for(int j = 0; j<this.CELLS_IN_ROW; j++) {
                 Button temp = new Button("");
+                temp.setFont(font);
                 temp.setPrefSize(this.grid.getPrefWidth(), this.grid.getPrefHeight());
+                int finalI = i;
+                int finalJ = j;
                 temp.setOnAction(new EventHandler<ActionEvent>() {
                     @Override
                     public void handle(ActionEvent event) {
-                        handleButton(event);
+                        handleButton(event, finalI, finalJ);
                     }
                 });
                 temp.setBackground(new Background(new BackgroundFill((blackOrWhite)?Color.WHITE:Color.BROWN, null, null)));
@@ -62,27 +66,63 @@ public class Controller {
                     blackOrWhite = !blackOrWhite;
 
                 }
-                this.board[i][j] = temp;
-                this.grid.add(temp, i, j);
+                this.buttons[i][j] = temp;
+                this.grid.add(temp, j, i);
             }
             blackOrWhite = !blackOrWhite;
         }
     }
 
-    private void drawBoardState(Board board) {
+
+    private void drawBoardState() {
         for(int i = 0; i<this.CELLS_IN_ROW; i++) {
             for(int j = 0; j<this.CELLS_IN_ROW; j++) {
-                if(board.getCells()[i][j].HasPiece()) {
-                    ImageView imageView = new ImageView(this.piecesModels.getBlackPieces().get(board.getCells()[i][j].getPiece().getClass()));
-                    imageView.setFitWidth(this.board[i][j].getWidth());
-                    imageView.setFitHeight(this.board[i][j].getHeight());
-                    this.board[i][j].setGraphic(imageView);
+                this.buttons[i][j].setGraphic(null);
+                if(this.game.getBoard().getCells()[i][j].HasPiece()) {
+                    ImageView imageView = new ImageView();
+                    if(this.game.getBoard().getCells()[i][j].getPiece().isWhite()) {
+                        imageView = new ImageView(this.piecesModels.getWhitePieces().get(this.game.getBoard().getCells()[i][j].getPiece().getClass()));
+                    }
+                    else {
+                        imageView = new ImageView(this.piecesModels.getBlackPieces().get(this.game.getBoard().getCells()[i][j].getPiece().getClass()));
+
+                    }
+                    imageView.setFitWidth(60);
+                    imageView.setFitHeight(60);
+                    this.buttons[i][j].setGraphic(imageView);
                 }
             }
         }
     }
 
+    private void restartAllButtonsText() {
+        for(int i = 0; i<this.CELLS_IN_ROW; i++) {
+            for (int j = 0; j < this.CELLS_IN_ROW; j++) {
+                this.buttons[i][j].setText("");
+            }
+        }
+    }
+
     // TODO
-    public void handleButton(ActionEvent event){System.out.println("press");}
+    public void handleButton(ActionEvent event, int x, int y){
+        restartAllButtonsText();
+        if(this.tapOnPiece) {
+            if(((Button) event.getSource()).getText().equals("o") || true || this.selectedPosition == null) {
+                this.game.move(this.game.getBoard().getCell(this.selectedPosition), new Position(x, y));
+                drawBoardState();
+            }
+            this.tapOnPiece = false;
+            this.selectedPosition = null;
+            return;
+        }
+        if(this.game.getBoard().getCells()[x][y].HasPiece()) {
+            ArrayList<Position> moves = this.game.availableMoves(this.game.getBoard().getCell(new Position(x, y)));
+            this.selectedPosition = new Position(x, y);
+            for(Position position : moves) {
+                this.buttons[position.getHeight()][position.getWidth()].setText("o");
+            }
+            this.tapOnPiece = true;
+        }
+    }
 
 }

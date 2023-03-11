@@ -1,20 +1,22 @@
 package sample;
 
+import java.util.Objects;
+
 import static sample.Main.NUMBER_OF_CELLS;
 
 
 public class Position {
 
     private int maxCell = NUMBER_OF_CELLS;
-    private int height;
-    private int width;
+    private int height = -1;
+    private int width = -1;
 
-    public Position(int height, int weight) {
-        if(height<0 || height>=maxCell || weight<0 || weight<=maxCell) {
+    public Position(int height, int width) {
+        if(height<0 || height>=maxCell || width<0 || width>=maxCell) {
             return;
         }
         this.height = height;
-        this.width = weight;
+        this.width = width;
     }
 
     public int getHeight() {
@@ -32,4 +34,19 @@ public class Position {
     public void setWidth(int width) {
         this.width = width;
     }
+
+    @Override
+    public String toString() {
+        return "(" + this.height + " ," + this.width + ")";
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Position position = (Position) o;
+        return height == position.height && width == position.width;
+    }
+
+
 }
