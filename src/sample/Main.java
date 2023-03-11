@@ -13,6 +13,8 @@ public class Main extends Application {
     public static int SCREEN_HEIGHT = 720;
     public static int SCREEN_LENGTH = 720;
 
+    public static int NUMBER_OF_CELLS = 8;
+
     @Override
     public void start(Stage primaryStage) throws Exception{
         Parent root = FXMLLoader.load(getClass().getResource("sample.fxml"));
