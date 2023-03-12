@@ -5,7 +5,7 @@ import java.util.Objects;
 import static sample.Main.NUMBER_OF_CELLS;
 
 
-public class Position {
+public class Position implements Cloneable{
 
     private int maxCell = NUMBER_OF_CELLS;
     private int height = -1;
@@ -46,6 +46,11 @@ public class Position {
         if (o == null || getClass() != o.getClass()) return false;
         Position position = (Position) o;
         return height == position.height && width == position.width;
+    }
+
+    public Object clone() throws CloneNotSupportedException {
+        Position position = (Position) super.clone();
+        return position;
     }
 
 

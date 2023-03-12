@@ -10,6 +10,11 @@ public class Pawn extends Piece {
         super(white, position);
     }
 
+    public Pawn(Pawn pawn) {
+        super(pawn.isWhite(), pawn.getPosition());
+        this.hasMoves = pawn.HasMoves();
+    }
+
     @Override
     public ArrayList<Position> getAvailableMoves() {
         ArrayList<Position> moves = new ArrayList<>();

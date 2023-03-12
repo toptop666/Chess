@@ -44,4 +44,9 @@ public class Cell {
         this.piece = piece;
         this.hasPiece = (piece != null);
     }
+
+    public void removePiece() {
+        this.hasPiece = false;
+        this.piece = null;
+    }
 }

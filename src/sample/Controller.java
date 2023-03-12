@@ -58,7 +58,11 @@ public class Controller {
                 temp.setOnAction(new EventHandler<ActionEvent>() {
                     @Override
                     public void handle(ActionEvent event) {
-                        handleButton(event, finalI, finalJ);
+                        try {
+                            handleButton(event, finalI, finalJ);
+                        } catch (CloneNotSupportedException e) {
+                            e.printStackTrace();
+                        }
                     }
                 });
                 temp.setBackground(new Background(new BackgroundFill((blackOrWhite)?Color.WHITE:Color.BROWN, null, null)));
@@ -104,7 +108,7 @@ public class Controller {
     }
 
     // TODO
-    public void handleButton(ActionEvent event, int x, int y){
+    public void handleButton(ActionEvent event, int x, int y) throws CloneNotSupportedException {
         restartAllButtonsText();
         if(this.tapOnPiece) {
             if(((Button) event.getSource()).getText().equals("o") || true || this.selectedPosition == null) {

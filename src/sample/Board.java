@@ -91,4 +91,15 @@ public class Board implements Iterator<Cell> {
         cell.setPiece(null);
         return true;
     }
+
+    public boolean eat(Cell eat, Cell eaten) throws CloneNotSupportedException {
+        if(!eat.HasPiece() || !eaten.HasPiece() || eat.getPiece().isWhite() == eaten.getPiece().isWhite()) {
+            return false;
+        }
+        eat.getPiece().setPosition(eaten.getCoordinate());
+
+        eaten.setPiece((Piece) eat.getPiece().clone());
+        eat.removePiece();
+        return true;
+    }
 }

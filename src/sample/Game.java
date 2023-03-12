@@ -39,7 +39,9 @@ public class Game {
             }
         }
         moves.removeIf(position -> this.board.getCell(position).HasPiece());
+        moves.add(cell.getCoordinate());
         removeUnreachablePositions(moves, possibleEats);
+        moves.remove(cell.getCoordinate());
         moves.addAll(possibleEats);
         if(! (cell.getPiece() instanceof Knight)) {
             moves = reachablePositions(moves, cell.getCoordinate());
@@ -75,38 +77,36 @@ public class Game {
     }
 
     public void removeUnreachablePositions(ArrayList<Position> list1, ArrayList<Position> list2) {
-        Set<Position> reachablePositions = new HashSet<>();
-        Queue<Position> queue = new LinkedList<>();
-
-        // Add all positions in list1 to reachablePositions set and queue
-        for (Position p : list1) {
-            reachablePositions.add(p);
-            queue.add(p);
-        }
-
-        // Perform BFS to find all reachable positions from list1
-        while (!queue.isEmpty()) {
-            Position current = queue.remove();
-            for (Position neighbor : list2) {
-                if (isAdjacent(current, neighbor) && !reachablePositions.contains(neighbor)) {
-                    reachablePositions.add(neighbor);
-                    queue.add(neighbor);
+        ArrayList<Position> deletablePositions = new ArrayList<>();
+        boolean delete = true;
+        for(Position mayBeDeleted :list2) {
+            delete = true;
+            for(Position position : list1) {
+                if(isAdjacent(position, mayBeDeleted)) {
+                    delete = false;
                 }
             }
+            if(delete) {
+                deletablePositions.add(mayBeDeleted);
+            }
         }
-
-        // Remove all positions from list2 that are not in reachablePositions
-        list2.removeIf(p -> !reachablePositions.contains(p));
+        list2.removeAll(deletablePositions);
     }
 
 
-    public boolean move(Cell cell, Position position) {
+    public boolean move(Cell cell, Position position) throws CloneNotSupportedException {
         ArrayList<Position> moves = availableMoves(cell);
         if(moves == null || !moves.contains(position)) {
             return false;
         }
         if(cell.getPiece() instanceof Pawn) {
             ((Pawn) cell.getPiece()).setHasMoves(true);
+        }
+        if(this.board.getCell(position).HasPiece()) {
+            if(this.board.getCell(position).getPiece().isWhite() != cell.getPiece().isWhite()) {
+                this.board.eat(cell, this.board.getCell(position));
+                return true;
+            }
         }
         this.board.movePiece(cell, position);
         return true;
