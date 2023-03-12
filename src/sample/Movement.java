@@ -22,22 +22,31 @@ public class Movement {
         ArrayList<Position> moves = cell.getPiece().getAvailableMoves();
         ArrayList<Position> possibleEats = new ArrayList<>();
         if(cell.getPiece().isWhite()) {
-            for(Position position : moves) {
-                if(this.board.getCell(position).HasPiece()) {
-                    if(!this.board.getCell(position).getPiece().isWhite()) {
+            List<Position> movesToRemove = new ArrayList<>();
+
+            for (Position position : moves) {
+                if (this.board.getCell(position).HasPiece()) {
+                    if (!this.board.getCell(position).getPiece().isWhite()) {
                         possibleEats.add(position);
+                        movesToRemove.add(position);
                     }
                 }
             }
+
+            moves.removeAll(movesToRemove);
         } else {
-            for(Position position : moves) {
-                if(this.board.getCell(position).HasPiece()) {
-                    if(this.board.getCell(position).getPiece().isWhite()) {
+            List<Position> movesToRemove = new ArrayList<>();
+
+            for (Position position : moves) {
+                if (this.board.getCell(position).HasPiece()) {
+                    if (this.board.getCell(position).getPiece().isWhite()) {
                         possibleEats.add(position);
-                        moves.removeIf(pos-> this.board.getCell(pos).HasPiece() && !this.board.getCell(pos).getPiece().isWhite());
+                        movesToRemove.add(position);
                     }
                 }
             }
+
+            moves.removeAll(movesToRemove);
         }
         if(! (cell.getPiece() instanceof Knight)) {
             moves.removeIf(position -> this.board.getCell(position).HasPiece());
