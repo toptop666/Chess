@@ -55,6 +55,9 @@ public class Board implements Iterator<Cell> {
     }
 
     public Cell getCell(Position position) {
+        if(position.getHeight() < 0 || position.getWidth()<0) {
+            return null;
+        }
         return this.cells[position.getHeight()][position.getWidth()];
     }
 

@@ -34,19 +34,24 @@ public class Game {
                 if(this.board.getCell(position).HasPiece()) {
                     if(this.board.getCell(position).getPiece().isWhite()) {
                         possibleEats.add(position);
+                        moves.removeIf(pos-> this.board.getCell(pos).HasPiece() && !this.board.getCell(pos).getPiece().isWhite());
                     }
                 }
             }
         }
-        moves.removeIf(position -> this.board.getCell(position).HasPiece());
-        moves.add(cell.getCoordinate());
-        removeUnreachablePositions(moves, possibleEats);
-        moves.remove(cell.getCoordinate());
-        moves.addAll(possibleEats);
         if(! (cell.getPiece() instanceof Knight)) {
+            moves.removeIf(position -> this.board.getCell(position).HasPiece());
+            moves.add(cell.getCoordinate());
+            removeUnreachablePositions(moves, possibleEats);
+            moves.remove(cell.getCoordinate());
+            moves.addAll(possibleEats);
             moves = reachablePositions(moves, cell.getCoordinate());
             moves.remove(cell.getCoordinate());
         }
+        if(cell.getPiece() instanceof Pawn) {
+            this.pawnMoves(cell, moves);
+        }
+        moves.removeIf(pos-> this.board.getCell(pos).HasPiece() && this.board.getCell(pos).getPiece().isWhite() == cell.getPiece().isWhite());
         return moves;
     }
 
@@ -109,6 +114,29 @@ public class Game {
             }
         }
         this.board.movePiece(cell, position);
+        return true;
+    }
+
+    private boolean pawnMoves(Cell cell, ArrayList<Position> moves) {
+        Position illegalPos = new Position(-1, -1);
+        Cell eat1 = this.board.getCell(new Position(cell.getPiece().getPosition().getHeight() + 1, cell.getPiece().getPosition().getWidth()+1));
+        Cell eat2 = this.board.getCell(new Position(cell.getPiece().getPosition().getHeight() + 1, cell.getPiece().getPosition().getWidth()-1));
+        Cell block = this.board.getCell(new Position(cell.getPiece().getPosition().getHeight() + 1, cell.getPiece().getPosition().getWidth()));
+        if(cell.getPiece().isWhite()) {
+            eat1 = this.board.getCell(new Position(cell.getPiece().getPosition().getHeight() - 1, cell.getPiece().getPosition().getWidth()+1));
+            eat2 = this.board.getCell(new Position(cell.getPiece().getPosition().getHeight() - 1, cell.getPiece().getPosition().getWidth()-1));
+            block = this.board.getCell(new Position(cell.getPiece().getPosition().getHeight() - 1, cell.getPiece().getPosition().getWidth()));
+        }
+        if(eat1 != null && eat1.HasPiece() && eat1.getPiece().isWhite() != cell.getPiece().isWhite() && !eat1.getCoordinate().equals(illegalPos)) {
+            moves.add(eat1.getCoordinate());
+        }
+        if(eat2 != null && eat2.HasPiece() && eat2.getPiece().isWhite() != cell.getPiece().isWhite() && !eat2.getCoordinate().equals(illegalPos)) {
+            moves.add(eat2.getCoordinate());
+        }
+        if(block != null && block.HasPiece()) {
+            moves.remove(block.getCoordinate());
+        }
+        if()
         return true;
     }
 
