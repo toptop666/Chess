@@ -50,6 +50,7 @@ public class Movement {
         }
         if(! (cell.getPiece() instanceof Knight)) {
             moves.removeIf(position -> this.board.getCell(position).HasPiece());
+            removePositionsBeyondEnemyLines(cell.getCoordinate(), moves);
             moves.add(cell.getCoordinate());
             removeUnreachablePositions(moves, possibleEats);
             moves.remove(cell.getCoordinate());
@@ -105,6 +106,36 @@ public class Movement {
             }
         }
         list2.removeAll(deletablePositions);
+    }
+
+    public void removePositionsBeyondEnemyLines(Position startingPosition, ArrayList<Position> positions) {
+        // Create a new HashSet to store the reachable positions
+        Set<Position> reachablePositions = new HashSet<>();
+        reachablePositions.add(startingPosition);
+
+        // Create a new Queue to store the positions to check
+        Queue<Position> positionsToCheck = new LinkedList<>();
+        positionsToCheck.offer(startingPosition);
+
+        // Loop until there are no more positions to check
+        while (!positionsToCheck.isEmpty()) {
+            Position currentPosition = positionsToCheck.poll();
+            for (Position position : positions) {
+                if (isPositionReachable(currentPosition, position) && !reachablePositions.contains(position)) {
+                    reachablePositions.add(position);
+                    positionsToCheck.offer(position);
+                }
+            }
+        }
+
+        // Remove unreachable positions from the original list
+        positions.retainAll(reachablePositions);
+    }
+
+    private boolean isPositionReachable(Position a, Position b) {
+        int dx = Math.abs(a.getWidth() - b.getWidth());
+        int dy = Math.abs(a.getHeight() - b.getHeight());
+        return (dx == 1 && dy == 1) || (dx == 0 && dy == 1) || (dx == 1 && dy == 0);
     }
 
 
