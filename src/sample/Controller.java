@@ -109,24 +109,37 @@ public class Controller {
 
     // TODO
     public void handleButton(ActionEvent event, int x, int y) throws CloneNotSupportedException {
-        restartAllButtonsText();
         if(this.tapOnPiece) {
-            if(((Button) event.getSource()).getText().equals("o") || true || this.selectedPosition == null) {
-                this.game.move(this.game.getBoard().getCell(this.selectedPosition), new Position(x, y));
-                drawBoardState();
+            boolean flag = false;
+            if(((Button) event.getSource()).getText().equals("o") || this.selectedPosition == null) {
+                flag = this.game.getMovement().move(this.game.getBoard().getCell(this.selectedPosition), new Position(x, y));
             }
+            if(flag) {
+                drawBoardState();
+                game.turn();
+            }
+            restartAllButtonsText();
             this.tapOnPiece = false;
             this.selectedPosition = null;
             return;
         }
-        if(this.game.getBoard().getCells()[x][y].HasPiece()) {
-            ArrayList<Position> moves = this.game.availableMoves(this.game.getBoard().getCell(new Position(x, y)));
+
+        if(this.game.isWhiteTurn() && this.game.getBoard().getCells()[x][y].HasPiece() && this.game.getBoard().getCells()[x][y].getPiece().isWhite()) {
+            ArrayList<Position> moves = this.game.getMovement().availableMoves(this.game.getBoard().getCell(new Position(x, y)));
             this.selectedPosition = new Position(x, y);
             for(Position position : moves) {
                 this.buttons[position.getHeight()][position.getWidth()].setText("o");
             }
-            this.tapOnPiece = true;
         }
+        if(!this.game.isWhiteTurn() && this.game.getBoard().getCells()[x][y].HasPiece() && !this.game.getBoard().getCells()[x][y].getPiece().isWhite()) {
+            ArrayList<Position> moves = this.game.getMovement().availableMoves(this.game.getBoard().getCell(new Position(x, y)));
+            this.selectedPosition = new Position(x, y);
+            for(Position position : moves) {
+                this.buttons[position.getHeight()][position.getWidth()].setText("o");
+            }
+        }
+        this.tapOnPiece = true;
+
     }
 
 }
