@@ -136,7 +136,6 @@ public class Game {
         if(block != null && block.HasPiece()) {
             moves.remove(block.getCoordinate());
         }
-        if()
         return true;
     }
 
