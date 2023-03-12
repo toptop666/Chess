@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.lang.*?>
+<?import javafx.collections.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
+
+<AnchorPane prefHeight="1000.0" prefWidth="1000.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="sample.ControllerMenu">
+   <children>
+      <VBox alignment="CENTER" prefHeight="1000.0" prefWidth="1000.0" spacing="100">
+         <children>
+            <Text strokeType="OUTSIDE" strokeWidth="0.0" text="JAVA CHESS">
+               <font>
+                  <Font size="64.0" />
+               </font>
+            </Text>
+            <ChoiceBox fx:id="gameModeChoiceBox" prefHeight="38.0" prefWidth="214.0">
+                <items>
+                    <FXCollections fx:factory="observableArrayList">
+                        <String fx:value="Player vs Player" />
+                        <String fx:value="Player vs Computer" />
+                    </FXCollections>
+                </items>
+            </ChoiceBox>
+            <Button mnemonicParsing="false" onAction="#start" prefHeight="80.0" prefWidth="426.0" text="START!">
+               <font>
+                  <Font size="36.0" />
+               </font>
+            </Button>
+            <Text fx:id="softwareOutput" fill="RED" strokeType="OUTSIDE" strokeWidth="0.0" text="" />
+         </children>
+      </VBox>
+   </children>
+</AnchorPane>

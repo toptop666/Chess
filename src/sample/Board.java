@@ -23,7 +23,7 @@ public class Board implements Iterator<Cell> {
         this.drawStartingBoard();
     }
 
-    private void drawStartingBoard() {
+    public void drawStartingBoard() {
         for(int i = 0; i<this.size; i++) {
             this.cells[1][i].setPiece(new Pawn(false, this.cells[1][i].getCoordinate()));
             this.cells[6][i].setPiece(new Pawn(true, this.cells[6][i].getCoordinate()));

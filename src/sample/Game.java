@@ -27,4 +27,10 @@ public class Game {
     public void turn() {
         this.whiteTurn = !this.whiteTurn;
     }
+
+    public void restart() {
+        this.board.drawStartingBoard();
+        this.movement = new Movement(this.board);
+        this.whiteTurn = true;
+    }
 }
